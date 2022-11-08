@@ -38,10 +38,12 @@ def discrete_transform(spam: pd.DataFrame, nonspam: pd.DataFrame):
             discrete[col] = True
     return discrete
 
+def normalize(dF : pd.DataFrame):
+    return df.iloc[:,0:-1].apply(lambda x: (x-x.min())/ (x.max() - x.min()), axis=0)
+
 if __name__ == '__main__':
     df = get_data()
-    df_spam = df.loc[df["spam"] == 1]
-    df_nonspam = df.loc[df["spam"] == 0]
-    normalize_df = df_spam.iloc[:,0:-1].apply(lambda x: (x-x.min())/ (x.max() - x.min()), axis=0)
-    discrete = discrete_transform(df_spam, df_nonspam)
-    print(discrete)
+    spam = df.loc[df["spam"] == 1]
+    nonspam = df.loc[df["spam"] == 0]
+    norm_spam = normalize(spam)
+    
