@@ -46,18 +46,41 @@ def discrete_transform(spam: pd.DataFrame, nonspam: pd.DataFrame):
     cols = spam.columns.values.tolist()
     discrete = pd.DataFrame(columns=cols)
     discrete.loc[0] = False
-    for col in spam.columns:
-        if spam[col] != nonspam[col] and spam[col] != "low":
-            print(col)
-            discrete[col] = True
+
+    for i in range(spam.shape[1]):
+        spam_col_sum = 0
+        nonspam_col_sum = 0
+        spam_count = 0
+        nonspam_count = 0
+
+        for j in range(spam.shape[0]):
+            if spam.iloc[j,i] in [1,2,3]:
+                spam_col_sum += spam.iloc[j,i]
+                spam_count += 1
+            if nonspam.iloc[j,i] in [1,2,3]:
+                nonspam_col_sum += nonspam.iloc[j,i]
+                nonspam_count += 1
+
+        spam_mean = spam_col_sum / spam_count
+        nonspam_mean = nonspam_col_sum / nonspam_count
+
+        if int(spam_mean) != int(nonspam_mean) and spam_mean > 1:
+            discrete.iloc[0,i] = True
+            print(cols[i])
+
+    # for col in spam.columns:
+    #     if spam[col] != nonspam[col] and spam[col] != "low":
+    #         print(col)
+    #         discrete[col] = True
     return discrete
 
 def normalize(dF : pd.DataFrame):
     """Returns a normalized version of the input DataFrame"""
-    return df.iloc[:,0:-4].apply(lambda x: (x-x.min())/ (x.max() - x.min()), axis=1)
+    return dF.iloc[:,0:-4].apply(lambda x: (x-x.min())/ (x.max() - x.min()), axis=1)
     # axis is 1 because we want to normalize each row, not each column
 
 if __name__ == '__main__':
+    print('På grinden!')
     df = get_data()
     spam = df.loc[df["spam"] == 1]
     nonspam = df.loc[df["spam"] == 0]
@@ -65,5 +88,5 @@ if __name__ == '__main__':
     norm_nonspam = normalize(nonspam)
     val_spam = normalized_to_values(norm_spam)
     val_nonspam = normalized_to_values(norm_nonspam)
-    #discrete = discrete_transform(val_spam, val_nonspam)
-    print(val_spam)
+    discrete = discrete_transform(val_spam, val_nonspam)
+    print(discrete)
