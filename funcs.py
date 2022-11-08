@@ -32,12 +32,14 @@ def normalized_to_values(dF : pd.DataFrame):
     """Changes the normalized values to either low (0-0.33) or mid (0.33-0.66) or high (0.66-1)"""
     for row in dF.index:
         for col in dF.columns:
-            if dF.loc[row,col] < 0.33:
-                dF.loc[row,col] = 'low'
+            if df.loc[row, col] == 0:
+                df.loc[row, col] = 0
+            elif dF.loc[row,col] < 0.33:
+                dF.loc[row,col] = 1
             elif dF.loc[row,col] < 0.66:
-                dF.loc[row,col] = 'mid'
+                dF.loc[row,col] = 2
             else:
-                dF.loc[row,col] = 'high'
+                dF.loc[row,col] = 3
     return dF
 
 def discrete_transform(spam: pd.DataFrame, nonspam: pd.DataFrame):
@@ -63,4 +65,5 @@ if __name__ == '__main__':
     norm_nonspam = normalize(nonspam)
     val_spam = normalized_to_values(norm_spam)
     val_nonspam = normalized_to_values(norm_nonspam)
-    discrete = discrete_transform(val_spam, val_nonspam)
+    #discrete = discrete_transform(val_spam, val_nonspam)
+    print(val_spam)
