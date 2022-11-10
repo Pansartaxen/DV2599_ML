@@ -43,6 +43,11 @@ def find_amount_of_zeros(dF : pd.DataFrame):
     """Returns the amount of zeros in the dataframe"""
     return dF[dF == 0].count().sum()
 
+def binning(dF : pd.DataFrame):
+    """Binns the data"""
+    for i in range(dF.shape[1]):
+        
+
 if __name__ == '__main__':
     print('På grinden!')
     df = get_data()
