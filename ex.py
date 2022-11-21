@@ -14,41 +14,41 @@ from sklearn.preprocessing import KBinsDiscretizer
 
 #Data Extraction from spambase.data into spambase_data.csv file
 
-with open ('spambase_data.csv', 'w+') as file:
-    for i in range(1, 58):
-        file.write(str(str(i)+',').rstrip('\n'))
-    file.write(str(str(58)).rstrip('\n'))
-    file.write('\n')
-    with open('spambase.data', 'r') as datafile:
-        for line in datafile:
-            file.write(line)
+# with open ('spambase.csv', 'w+') as file:
+#     for i in range(1, 58):
+#         file.write(str(str(i)+',').rstrip('\n'))
+#     file.write(str(str(58)).rstrip('\n'))
+#     file.write('\n')
+#     with open('spambase.csv', 'r') as datafile:
+#         for line in datafile:
+#             file.write(line)
 
-#Reading spambase_data.csv into pandas dataframe   
-         
-df = pd.read_csv('spambase_data.csv', delimiter = ',')
+#Reading spambase_data.csv into pandas dataframe
+
+df = pd.read_csv('spambase.csv', delimiter = ',')
 
 #Dropping columns with null values.
 
 df = df.dropna(axis=1) #There were no null values
 
-# Columns 1 to 57 have continuous real data. 
+# Columns 1 to 57 have continuous real data.
 
 #Checking for null values.
 
 df2 = df.any()                 #Obtained false for every column. Hence, there are no null values.
-print(df2)        
+##print(df2)
 
 # Converting continuous values to discrete values. Performing a uniform discretization transform of the dataset
-# uniform discretization transform will preserve the probability distribution of each input 
+# uniform discretization transform will preserve the probability distribution of each input
 #variable but will make it discrete with the specified number of ordinal groups or labels.
 
-print(df.shape)
-df.hist()
-pyplot.show()
+#print(df.shape)
+#df.hist()
+#pyplot.show()
 
 trans = KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
 df.iloc[:,:-3] = trans.fit_transform(df.iloc[:,:-3])
-print(df)
+##print(df)
 
 
 
@@ -93,24 +93,24 @@ def column(matrix, i):
  the features observed
  '''
 def possible_space_size(data):
-    
+
     unique_values = []
-    
+
     for j in range(len(data[0])-2):
         unique_values.append([0,1,2,3,4,5,6,7,8,9])
-        
+
     for j in range(len(data[0])-2, len(data[0])):
         unique_values.append(list(set(column(data, j))))
 
     hyp_space_size = 1
-    
+
     for i in range(len(unique_values)-2):
         hyp_space_size = hyp_space_size * 10 #Since Continuous data is divided into 10 descrete values through binning
-    
+
     for i in range(len(unique_values)-2, len(unique_values)):
         hyp_space_size = hyp_space_size * len(unique_values[i])
-        print("\nUnique values ",i+1)
-        print(len(unique_values[i]))
+        #print("\nUnique values ",i+1)
+        #print(len(unique_values[i]))
     return unique_values, hyp_space_size
 
 '''
@@ -119,7 +119,7 @@ def possible_space_size(data):
  Output: Integer size of hypothesis space
  '''
 def hyp_space_size(data, unique_vals):
-    
+
     hyp_space_size = 1
 
     for i in range(len(data)-2):
@@ -168,7 +168,7 @@ positivesY_test = to_int1(positivesY_test)
 #Size of most general hypothesis space
 unique_values, hyp_size = possible_space_size(total_data)
 
-print("Size of most general hypothesis space = ", hyp_size)
+#print("Size of most general hypothesis space = ", hyp_size)
 
 #Applying Algorithm 4.1
 '''
@@ -178,6 +178,7 @@ print("Size of most general hypothesis space = ", hyp_size)
  '''
 def LGG_Set(data, m):
     h = []
+    print(data[0])
     #Initiating hypothesis with first instance from Data
     for i in range(len(data[0])):
         h.append([])
@@ -188,7 +189,7 @@ def LGG_Set(data, m):
             h = LGG_Conj(x, h)
         elif m == 3:
             h = LGG_Conj_ID(x, h)
-        
+    #print(h)
     return h
 
 #Algorithm 4.2: Conjunction of all literals common
@@ -222,7 +223,7 @@ def LGG_Conj_ID(x, y):
 '''
  function for testing the hypothesis space (concept learned) on test data
  Input: data of shape n * 57 * 1, 57 * m (several instance values and hypothesis space)
- Output: results of size n 
+ Output: results of size n
  '''
 def test(data, h):
     result = []
@@ -237,7 +238,7 @@ def test(data, h):
 '''
  function for finding accuracy of the results on test data
  Input: data of shape 57 * 1, 57 * 1 (Ground Truth and Result)
- Output: Accuracy value 
+ Output: Accuracy value
  '''
 def find_accuracy(y, result):
     correct_pred = 0
@@ -253,72 +254,72 @@ def find_accuracy(y, result):
 
 #Training Alg 4.1 & 4.2 on 80% positives
 hypothesis_space1 = LGG_Set(train_data,2)
-print(hypothesis_space1)
+#print(hypothesis_space1)
 hyp_size2 = hyp_space_size(hypothesis_space1, unique_values)
-print(hyp_size2)
+#print(hyp_size2)
 
 #Testing on test data
 result = test(x_test, hypothesis_space1)
 accuracy = find_accuracy(y_test, result)
-print(accuracy)
+#print(accuracy)
 
 #Testing on all positives
 result = test(positivesX_test, hypothesis_space1)
 accuracy = find_accuracy(positivesY_test, result)
-print(accuracy)
+#print(accuracy)
 
 #Testing on all data
 result = test(total_data, hypothesis_space1)
 accuracy = find_accuracy(total_data_y, result)
-print(accuracy)
+#print(accuracy)
 
 
 
 
 #Training Alg 4.1 & 4.3 on 80% positives
 hypothesis_space2 = LGG_Set(train_data,3)
-print(hypothesis_space2)
+##print(hypothesis_space2)
 hyp_size2 = hyp_space_size(hypothesis_space2, unique_values)
-print(hyp_size2)
+#print(hyp_size2)
 
 #Testing on test data
 result = test(x_test, hypothesis_space2)
 accuracy = find_accuracy(y_test, result)
-print(accuracy)
+#print(accuracy)
 
 #Testing on all positives
 result = test(positivesX_test, hypothesis_space2)
 accuracy = find_accuracy(positivesY_test, result)
-print(accuracy)
+#print(accuracy)
 
 #Testing on all data
 result = test(total_data, hypothesis_space2)
 accuracy = find_accuracy(total_data_y, result)
-print(accuracy)
+#print(accuracy)
 
 
 
 
 #Training Alg 4.1 & 4.2 on 100% positives
 hypothesis_space3 = LGG_Set(positivesX_test,2)
-print(hypothesis_space3)
+##print(hypothesis_space3)
 hyp_size2 = hyp_space_size(hypothesis_space3, unique_values)
-print(hyp_size2)
+#print(hyp_size2)
 
 #Testing on test data
 result = test(x_test, hypothesis_space3)
 accuracy = find_accuracy(y_test, result)
-print(accuracy)
+print('Accuracy test data:',accuracy)
 
 #Testing on all positives
 result = test(positivesX_test, hypothesis_space3)
 accuracy = find_accuracy(positivesY_test, result)
-print(accuracy)
+print('Accuracy all positives:',accuracy)
 
 #Testing on all data
 result = test(total_data, hypothesis_space3)
 accuracy = find_accuracy(total_data_y, result)
-print(accuracy)
+print('Accuracy all data:',accuracy)
 
 
 
@@ -327,24 +328,21 @@ print(accuracy)
 
 #Training Alg 4.1 & 4.3 on 100% positives
 hypothesis_space4 = LGG_Set(positivesX_test,3)
-print(hypothesis_space2)
+##print(hypothesis_space2)
 hyp_size2 = hyp_space_size(hypothesis_space4, unique_values)
-print(hyp_size2)
+#print(hyp_size2)
 
 #Testing on test data
 result = test(x_test, hypothesis_space4)
 accuracy = find_accuracy(y_test, result)
-print(accuracy)
+print('Accuracy:',accuracy)
 
 #Testing on all positives
 result = test(positivesX_test, hypothesis_space4)
 accuracy = find_accuracy(positivesY_test, result)
-print(accuracy)
+print('Accuracy:',accuracy)
 
 #Testing on all data
 result = test(total_data, hypothesis_space4)
 accuracy = find_accuracy(total_data_y, result)
-print(accuracy)
-
-
-
+print('Accuracy:',accuracy)

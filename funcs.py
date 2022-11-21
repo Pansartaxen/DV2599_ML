@@ -82,6 +82,21 @@ def most_above_zero(dF : pd.DataFrame):
         above_zero[col] = dF[dF[col] > 0].count()[col]/dF.shape[0]
     return sorted(above_zero.items(), key=lambda x: x[1], reverse=True)
 
+def binning(dF : pd.DataFrame):
+    """Binns the data"""
+    for col in range(dF.shape[1]-4):
+        dF = dF.sort_values(by=dF.columns[col], ascending=False)
+        for row in range(dF.shape[0]):
+            # if dF.iloc[row, col] > 0:
+            #     dF.iloc[row, col] = 1
+            if dF.iloc[row,col] != 0 and row < int(dF.shape[0]*0.30):
+                dF.iloc[row,col] = 1
+            elif dF.iloc[row,col] == 0 and row < int(dF.shape[0]*0.30): # if the value is 0 and the row is in the top 30%
+                dF.iloc[row,col] = -1
+            else:
+                dF.iloc[row,col] = 0
+    return dF
+
 if __name__ == '__main__':
     print('På grinden!')
     df = get_data()
