@@ -1,59 +1,59 @@
-,1293
-make,1.0
-address,1.0
-all,1.0
-3d,1.0
-our,1.0
-over,1.0
-remove,1.0
-internet,1.0
-order,1.0
-mail,1.0
-recieve,1.0
-will,1.0
-people,1.0
-report,1.0
-addresses,1.0
-free,1.0
-buisness,1.0
-email,1.0
-you,1.0
-credit,1.0
-your,1.0
-font,1.0
-000,1.0
-money,1.0
-hp,1.0
-hpl,1.0
-george,1.0
-650,1.0
-lab,1.0
-labs,1.0
-telnet,1.0
-857,1.0
-data,1.0
-415,1.0
-85,1.0
-technology,1.0
-1999,1.0
-parts,1.0
-pm,1.0
-direct,1.0
-cs,1.0
-meeting,1.0
-original,1.0
-project,1.0
-re,1.0
-edu,1.0
-table,1.0
-conference,1.0
-;,1.0
-(,1.0
-[,1.0
-!,1.0
-$,1.0
-#,1.0
-capital_run_length_average,5.3
-capital_run_length_longest,66.0
-capital_run_length_total,106.0
+,1637
+make ,0.0
+address ,1.0
+all  ,1.0
+3d    ,1.0
+our   ,0.0
+over ,0.0
+remove ,1.0
+internet ,0.0
+order ,1.0
+mail  ,1.0
+recieve ,1.0
+will ,1.0
+people ,1.0
+report ,1.0
+addresses ,1.0
+free  ,1.0
+buisness ,1.0
+email ,0.0
+you   ,1.0
+credit ,1.0
+your  ,1.0
+font  ,1.0
+000    ,0.0
+money ,1.0
+hp    ,1.0
+hpl   ,1.0
+george ,1.0
+650    ,1.0
+lab   ,1.0
+labs ,1.0
+telnet ,1.0
+857    ,1.0
+data  ,1.0
+415    ,1.0
+85    ,1.0
+technology ,1.0
+1999    ,1.0
+parts ,1.0
+pm    ,1.0
+direct ,1.0
+cs   ,1.0
+meeting ,1.0
+original ,1.0
+project ,1.0
+re    ,0.0
+edu   ,1.0
+table ,1.0
+conference ,1.0
+;     ,1.0
+(     ,1.0
+[     ,1.0
+!      ,0.0
+$     ,0.0
+#      ,0.0
+capital_run_length_average ,2.337
+capital_run_length_longest ,41.0
+capital_run_length_total ,505.0
 spam,1.0

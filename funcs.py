@@ -8,10 +8,11 @@ def get_data():
 def lgg_conj(H : pd.DataFrame, x : pd.DataFrame):
     """Returns the least general generalization of H and x"""
     y = H.copy()
-    for col in range(H.shape[0]):
+
+    for col in range(H.shape[0]-4):
         a,b = H.iloc[col], x.iloc[col]
-        if H.iloc[col] == x.iloc[col] and H.iloc[col]:
-            y.iloc[col] = 1
+        if H.iloc[col] == x.iloc[col]:
+            y.iloc[col] = H.iloc[col]
         else:
             y.iloc[col] = 0
     return y
@@ -57,18 +58,19 @@ def test_performance(data: pd.DataFrame, H: pd.Series):
             else:
                 ham_as_spam += 1
         else:
-            if data.iloc[row, -1]: 
+            if data.iloc[row, -1]:
                 spam_as_ham += 1
             else:
                 ham_as_ham += 1
                 correct += 1
-        
+
     print("good Spam as spam: ", spam_as_spam)
     print("bad Spam as ham: ", spam_as_ham)
     print("good Ham as ham: ", ham_as_ham)
     print("bad Ham as spam: ", ham_as_spam)
     print("Accuracy: ", correct/data.shape[0])
     return correct/data.shape[0]
+
 
 def most_above_zero(dF : pd.DataFrame):
     """Returns the columns with the percentage of values above 0 and sorted by the percentage"""
@@ -78,19 +80,79 @@ def most_above_zero(dF : pd.DataFrame):
     return sorted(above_zero.items(), key=lambda x: x[1], reverse=True)
 
 def binning(dF : pd.DataFrame):
-    """Binns the data"""
+    """Binns the data using two binns"""
     for col in range(dF.shape[1]-4):
         dF = dF.sort_values(by=dF.columns[col], ascending=False)
         for row in range(dF.shape[0]):
-            # if dF.iloc[row, col] > 0:
-            #     dF.iloc[row, col] = 1
-            if dF.iloc[row,col] != 0 and row < int(dF.shape[0]*0.30):
+            if dF.iloc[row,col] != 0 and row < int(dF.shape[0]*0.50):
                 dF.iloc[row,col] = 1
-            elif dF.iloc[row,col] == 0 and row < int(dF.shape[0]*0.30): # if the value is 0 and the row is in the top 30%
-                dF.iloc[row,col] = -1
             else:
                 dF.iloc[row,col] = 0
     return dF
+
+def remove_zero_rows(dF: pd.DataFrame):
+    print(dF.shape)
+    dF = dF.iloc[:,0:dF.shape[0]-4]
+    size = dF.shape[0]-4
+    dF.loc[(dF!=0).any(axis=1)]
+    print(dF.shape)
+
+def discretize(dF: pd.DataFrame):
+    print('discrete')
+    retDF = dF.copy()
+    discrete = KBinsDiscretizer(n_bins=2, encode='ordinal', strategy='uniform')
+    retDF.iloc[:,:-3] = discrete.fit_transform(retDF.iloc[:,:-3])
+
+    for row in range(dF.shape[0]):
+        if dF.iloc[row].isin([0]).sum() > 50:
+            retDF = retDF.drop(row)
+
+    retDF.to_csv('discrete.csv', encoding='utf-8')
+    return retDF
+
+def test_performance(data: pd.DataFrame, H: pd.Series):
+    """Returns the accuracy of the hypothesis"""
+    spam_as_spam = 0
+    spam_as_ham = 0
+    ham_as_ham = 0
+    ham_as_spam = 0
+
+    correct = 0
+
+    H_values = []
+    for keys in H.keys():
+        if H[keys] == True:
+            H_values.append(keys)
+    print(H_values)
+    for row in range(data.shape[0]):
+        spam = True
+        for col in range(data.shape[1]-1):
+            if H.iloc[col]:
+                if not data.iloc[row, col]:
+                    spam = False
+        if spam:
+            if data.iloc[row, -1]:
+                spam_as_spam += 1
+                correct += 1
+            else:
+                ham_as_spam += 1
+        else:
+            if data.iloc[row, -1]:
+                spam_as_ham += 1
+            else:
+                ham_as_ham += 1
+                correct += 1
+
+    print("good Spam as spam: ", spam_as_spam)
+    print("bad Spam as ham: ", spam_as_ham)
+    print("good Ham as ham: ", ham_as_ham)
+    print("bad Ham as spam: ", ham_as_spam)
+    print("Accuracy: ", correct/data.shape[0])
+    return correct/data.shape[0]
+
+def possible_instances(data: pd.DataFrame):
+    pass
+
 
 if __name__ == '__main__':
     print('På grinden!')
@@ -98,7 +160,7 @@ if __name__ == '__main__':
 
     spam = df[df['spam'] == 1].copy()
     ham = df[df['spam'] == 0].copy()
-    
+
     initiated = True
 
     while initiated or len(h[h==1]) < 5:
@@ -116,5 +178,3 @@ if __name__ == '__main__':
     print(test_performance(joined, h))
 
     print("Bra pluggat idag grabbar!")
-
-    
