@@ -4,6 +4,7 @@
 # MARIUS STOKKEDAL AND SEBASTIAN BENGTSSON, BTH 2022
 
 # Instructions
+# Make sure pandas and scikit-learn packages are installed
 # Make sure the spambase.csv file exists (otherwise rename spambase.data to csv)
 # Run the file funcs.py
 # The rest will be done automatically, with prints in the terminal showing the results and accuracy
