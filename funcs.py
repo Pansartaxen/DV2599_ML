@@ -64,7 +64,7 @@ def test_performance(data: pd.DataFrame, H: pd.Series):
             else: # If it's actually ham
                 ham_as_ham += 1
                 correct += 1
-        
+
     print("good Spam as spam: ", spam_as_spam)
     print("bad Spam as ham: ", spam_as_ham)
     print("good Ham as ham: ", ham_as_ham)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     spam = df[df['spam'] == 1].copy()
     ham = df[df['spam'] == 0].copy()
-    
+
     initiated = True
 
     while initiated or len(h[h==1]) < 5: # make sure h is not empty 
