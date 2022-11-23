@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 def get_data():
+    """Returns the data as a pandas dataframe"""
     df = pd.read_csv('spambase.csv')
     return df
 
@@ -9,25 +10,25 @@ def lgg_conj(H : pd.DataFrame, x : pd.DataFrame):
     """Returns the least general generalization of H and x"""
     y = H.copy()
     for col in range(H.shape[0]):
-        a,b = H.iloc[col], x.iloc[col]
-        if H.iloc[col] == x.iloc[col] and H.iloc[col]:
+        if H.iloc[col] == x.iloc[col] and H.iloc[col]: # If the values are the same and not 0
             y.iloc[col] = 1
         else:
             y.iloc[col] = 0
     return y
 
 def lgg_set(data : pd.DataFrame):
-    H = data.iloc[0]
+    """Returns the least general generalization of the data"""
+    H = data.iloc[0] # Initialize H with the first row
     for row in range(data.shape[0]):
-        x = data.iloc[row]
+        x = data.iloc[row] 
         H = lgg_conj(H, x)
     return H
 
 def continuous_to_discrete(data : pd.DataFrame):
-    """If value is above 0.01, set to 1, else 0"""
+    """Returns the data as a discrete dataframe"""
     retDF = data.copy()
     for col in data.columns:
-        retDF[col] = retDF[col].apply(lambda x: 1 if float(x) > 0.01 else 0)
+        retDF[col] = retDF[col].apply(lambda x: 1 if float(x) > 0.01 else 0) # If the value is above 0.01, set it to 1, else 0
     return retDF
 
 def test_performance(data: pd.DataFrame, H: pd.Series):
@@ -43,23 +44,24 @@ def test_performance(data: pd.DataFrame, H: pd.Series):
     for keys in H.keys():
         if H[keys] == True:
             H_values.append(keys)
-    print(H_values)
+
+    print(f"H-values: {H_values[:-4]}")
     for row in range(data.shape[0]):
         spam = True
-        for col in range(data.shape[1]-1):
-            if H.iloc[col]:
-                if not data.iloc[row, col]:
-                    spam = False
-        if spam:
-            if data.iloc[row, -1]:
+        for col in range(data.shape[1]-1): # -1 because the last column is the class
+            if H.iloc[col]: 
+                if not data.iloc[row, col]: # If the value is 0 and the h-value for the same column is 1
+                    spam = False 
+        if spam: # If the model says it's spam
+            if data.iloc[row, -1]: # If it's actually spam
                 spam_as_spam += 1
                 correct += 1
-            else:
+            else: # If it's actually ham
                 ham_as_spam += 1
-        else:
-            if data.iloc[row, -1]: 
+        else: # If the model says it's ham
+            if data.iloc[row, -1]: # If it's actually spam
                 spam_as_ham += 1
-            else:
+            else: # If it's actually ham
                 ham_as_ham += 1
                 correct += 1
         
@@ -67,33 +69,12 @@ def test_performance(data: pd.DataFrame, H: pd.Series):
     print("bad Spam as ham: ", spam_as_ham)
     print("good Ham as ham: ", ham_as_ham)
     print("bad Ham as spam: ", ham_as_spam)
-    print("Accuracy: ", correct/data.shape[0])
+    print(f"Accuracy: {100*round(correct/data.shape[0], 2)} %")
     return correct/data.shape[0]
 
-def most_above_zero(dF : pd.DataFrame):
-    """Returns the columns with the percentage of values above 0 and sorted by the percentage"""
-    above_zero = {}
-    for col in dF.columns:
-        above_zero[col] = dF[dF[col] > 0].count()[col]/dF.shape[0]
-    return sorted(above_zero.items(), key=lambda x: x[1], reverse=True)
-
-def binning(dF : pd.DataFrame):
-    """Binns the data"""
-    for col in range(dF.shape[1]-4):
-        dF = dF.sort_values(by=dF.columns[col], ascending=False)
-        for row in range(dF.shape[0]):
-            # if dF.iloc[row, col] > 0:
-            #     dF.iloc[row, col] = 1
-            if dF.iloc[row,col] != 0 and row < int(dF.shape[0]*0.30):
-                dF.iloc[row,col] = 1
-            elif dF.iloc[row,col] == 0 and row < int(dF.shape[0]*0.30): # if the value is 0 and the row is in the top 30%
-                dF.iloc[row,col] = -1
-            else:
-                dF.iloc[row,col] = 0
-    return dF
-
 if __name__ == '__main__':
-    print('På grinden!')
+    print('Starting up!')
+    print('Code by Marius Stokkedal and Sebastian Bengtsson!')
     df = get_data()
 
     spam = df[df['spam'] == 1].copy()
@@ -101,20 +82,14 @@ if __name__ == '__main__':
     
     initiated = True
 
-    while initiated or len(h[h==1]) < 5:
+    while initiated or len(h[h==1]) < 5: # make sure h is not empty 
         initiated = False
         train_data, split_data = train_test_split(spam, test_size=0.997)
 
         train_data = continuous_to_discrete(train_data)
-        split_data = continuous_to_discrete(split_data)
+        split_data = continuous_to_discrete(split_data) 
 
         h = lgg_set(train_data)
 
-    old_joined = [ham, split_data]
-    joined = pd.concat(old_joined)
-
-    print(test_performance(joined, h))
-
-    print("Bra pluggat idag grabbar!")
-
-    
+    test_performance(pd.concat([ham, split_data]), h) # Test the performance on the split spam data and the ham data
+    print("Done!")
