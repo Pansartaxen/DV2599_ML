@@ -1,10 +1,3 @@
-import pandas as pd
-
-def get_data():
-    """Returns the data as a pandas dataframe"""
-    df = pd.read_csv('/Users/mariusstokkedal/Desktop/DV2599_Maskininlärning/DV2599_ML/Ass2/spambase.csv')
-    return df
-
 def row_ranker(row: list) -> list:
     score = 1
     score_dict = {}
@@ -21,9 +14,13 @@ def average(lst: list):
     return sum(lst)/len(lst)
 
 def friedman(knn: list, svm: list, DT: list):
+    """Returns the friedman test statistic"""
+
+    for i in range(len(knn)):
+        ranked = row_ranker([knn[i], svm[i], DT[i]])
+        knn[i] = ranked[0]
+        svm[i] = ranked[1]
+        DT[i] = ranked[2]
+
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     return 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
-
-
-data = get_data()
-print(friedman(data))
