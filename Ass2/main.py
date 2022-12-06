@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from time import time
+
 from sklearn.metrics import accuracy_score
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -8,7 +9,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 
+
 from sklearn import tree
+
+from friedman import friedman
+
 
 # Marius Stokkedal & Sebastian Bengtsson
 # Implementation and testing of KNN algorithm
@@ -24,27 +29,59 @@ def df_to_list(data: pd.DataFrame):
     classes = [data.iloc[row][-1] for row in data.index]
     return vector,classes
 
+def accuracy_check(pred, actual, mode):
+    """
+    pred = predicted values
+    actual = actual values
+    mode = accuracy or f1
 
-def row_ranker(row: list) -> list:
-    score = 1
-    score_dict = {}
-    for val in set(row):
-        count = row.count(val)
-        tot = 0
-        for i in range(count):
-            tot += i+score
-        score += count
-        score_dict[val] = tot/count
-    return [score_dict[val] for val in row]
+    returns the accuracy or f1 score
+    """
 
-def knn(vector_train, vector_test, class_train, class_test):
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
+
+    for p,a in zip(pred,actual):
+        if p and a:
+            tp += 1
+        elif not p and not a:
+            tn += 1
+        elif p and not a:
+            fp += 1
+        elif not p and a:
+            fn += 1
+    
+    if mode == "accuracy":
+        return (tp + tn) / (tp + tn + fp + fn)
+    
+    elif mode == "f1":
+        recall = tp / (tp + fn)
+        precision = tp / (tp + fp)
+        return 2 * (recall * precision) / (recall + precision)
+
+def knn(vector_train, vector_test, class_train, class_test, eval_measure=2):
+
+    if eval_measure == 1:
+        time_start = time()
+
     model = KNeighborsClassifier(n_neighbors=3)
     model.fit(vector_train, class_train)
+
+    if eval_measure == 1:
+        time_end = time()
+        return time_end - time_start
+
     spam_pred = model.predict(vector_test)
     return accuracy_score(class_test, spam_pred)
 
-def svm(vector_train, vector_test, class_train, class_test):
+def svm(vector_train, vector_test, class_train, class_test, eval_measure=2):
     sc = StandardScaler()
+
+    if eval_measure == 1:
+        time_start = time()
+
     sc.fit(vector_train)
 
     vector_train_std = sc.transform(vector_train)
@@ -62,22 +99,35 @@ def svm(vector_train, vector_test, class_train, class_test):
 
     # The fit method is used to train the model using the training da
     svm.fit(vector_train_std, class_train)
+    
+    if eval_measure == 1:
+        time_end = time()
+        return time_end - time_start
+    
     y_pred = svm.predict(vector_test_std)
-    return accuracy_score(class_test, y_pred)
+    return accuracy_score(class_test, y_pred), accuracy_check(y_pred, class_test, "accuracy")
 
-def dec_tree(vector_train, vector_test, class_train, class_test):
+def dec_tree(vector_train, vector_test, class_train, class_test, eval_measure=2):
+
+    if eval_measure == 1:
+        time_start = time()
+
     DT = tree.DecisionTreeClassifier()
     DT = DT.fit(vector_train, class_train)
+
+    if eval_measure == 1:
+        time_end = time()
+        return time_end - time_start
+
     spam_pred = DT.predict(vector_test)
     return accuracy_score(class_test, spam_pred)
-
 
 if "__main__" == __name__:
     data = get_data()
     vectors,classes = df_to_list(data)
 
     print("-"*50)
-    print("Fold | KNN | SVM | Decision Tree")
+    print("Fold | KNN    | SVM    | Decision Tree")
     print("-"*50)
     knn_tot = []
     svm_tot = []
@@ -95,19 +145,24 @@ if "__main__" == __name__:
         k = knn(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         knn_tot.append(k)
 
-        s = svm(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
+        s,our = svm(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         svm_tot.append(s)
-
+        print(s,our,"hello")
         t = dec_tree(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         dec_tot.append(t)
-
-        print(f"{round+1} | {k:.4f} | {s:.4f} | {t:.4f}")
+        if round != 9:
+            print(f"{round+1}    | {k:.4f} | {s:.4f} | {t:.4f}")
+        else:
+            print(f"{round+1}   | {k:.4f} | {s:.4f} | {t:.4f}")
     knn_stdev = np.std(knn_tot)
     svm_stdev = np.std(svm_tot)
     dec_stdev = np.std(dec_tot)
 
+    friedman_stat = friedman(knn_tot, svm_tot, dec_tot)
+
     print("-"*50)
-    print(f"Average | {sum(knn_tot)/len(knn_tot):.4f} | {sum(svm_tot)/len(svm_tot):.4f} | {sum(dec_tot)/len(dec_tot):.4f}")
-    print(f"Stdv    | {knn_stdev:.4f} | {svm_stdev:.4f} | {dec_stdev:.4f}")
+    print(f"avg  | {sum(knn_tot)/len(knn_tot):.4f} | {sum(svm_tot)/len(svm_tot):.4f} | {sum(dec_tot)/len(dec_tot):.4f}")
+    print(f"stdv | {knn_stdev:.4f} | {svm_stdev:.4f} | {dec_stdev:.4f}")
     print("-"*50)
+    print(f"Friedman statistic: {friedman_stat:.4f}")
 
