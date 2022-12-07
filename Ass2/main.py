@@ -10,9 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn import tree
 
 from friedman import friedman
-import random
 
-from scipy import stats
 # Marius Stokkedal & Sebastian Bengtsson
 # Blekinge Institute of Technoligy, Karlskrona, Sweden
 # Created 5 dec 2022
@@ -191,11 +189,9 @@ if "__main__" == __name__:
         dec_stdev = np.std(dec_tot[i])
 
         friedman_stat = friedman(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
-        scipy_friedman = stats.friedmanchisquare(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
 
         print("-"*50)
         print(f"avg  | {sum(knn_tot[i])/len(knn_tot[i]):.4f} | {sum(svm_tot[i])/len(svm_tot[i]):.4f} | {sum(dec_tot[i])/len(dec_tot[i]):.4f}")
         print(f"stdv | {knn_stdev:.4f} | {svm_stdev:.4f} | {dec_stdev:.4f}")
         print("-"*50)
         print(f"Friedman statistic: {friedman_stat:.4f}")
-        print(f"Scipy friedman statistic: {scipy_friedman[0]:.4f}")
