@@ -35,9 +35,24 @@ def friedman(knn: list, svm: list, DT: list) -> float:
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     return 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
 
-def critical_difference(alg_1: float, n_alg_1: int, alg_2: float, len_alg_2: int) -> bool:
+def critical_difference(alg_1: list, alg_2: list, alg_3: list) -> list:
     """Returns the critical difference"""
-    return abs((alg_1 / n_alg_1) - (alg_2 / len_alg_2)) > 3.877 * math.sqrt((1/5))
+    for i in range(len(alg_1)):
+        ranked = row_ranker([alg_1[i], alg_2[i], alg_3[i]])
+        alg_1[i] = ranked[0]
+        alg_2[i] = ranked[1]
+        alg_3[i] = ranked[2]
+
+    avg_alg_1 = sum(alg_1) / len(alg_1)
+    avg_alg_2 = sum(alg_2) / len(alg_2)
+    avg_alg_3 = sum(alg_3) / len(alg_3)
+
+    ret_list = []
+    ret_list.append((abs(avg_alg_1 - avg_alg_2) > 2.343 * math.sqrt(1/5), "knn vs svm"))
+    ret_list.append((abs(avg_alg_1 - avg_alg_3) > 2.343 * math.sqrt(1/5), "knn vs DT"))
+    ret_list.append((abs(avg_alg_2 - avg_alg_3) > 2.343 * math.sqrt(1/5), "svm vs DT"))
+
+    return ret_list
 
 if __name__ == "__main__":
     """Function to test the friedman function"""
@@ -45,3 +60,4 @@ if __name__ == "__main__":
     svm = [0.7164, 0.8883, 0.8410, 0.6825, 0.7599, 0.8479, 0.7012, 0.4959, 0.9279, 0.7455]
     DT = [0.7524, 0.8964, 0.6803, 0.9102, 0.7758, 0.8154, 0.6224, 0.7585, 0.938, 0.7524]
     print(friedman(knn, svm, DT))
+    print(critical_difference(knn, svm, DT))
