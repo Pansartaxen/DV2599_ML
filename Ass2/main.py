@@ -2,13 +2,10 @@ import pandas as pd
 import numpy as np
 from time import time
 
-from sklearn.metrics import accuracy_score
-
 from sklearn.neighbors import KNeighborsClassifier
 
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
-
 
 from sklearn import tree
 
@@ -76,7 +73,7 @@ def knn(vector_train, vector_test, class_train, class_test, eval_measure=2):
         return time_end - time_start
 
     spam_pred = model.predict(vector_test)
-    return accuracy_score(class_test, spam_pred)
+    return accuracy_check(spam_pred, class_test, "accuracy")
 
 def svm(vector_train, vector_test, class_train, class_test, eval_measure=2):
     sc = StandardScaler()
@@ -106,8 +103,8 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure=2):
         time_end = time()
         return time_end - time_start
 
-    y_pred = svm.predict(vector_test_std)
-    return accuracy_score(class_test, y_pred), accuracy_check(y_pred, class_test, "accuracy")
+    spam_pred = svm.predict(vector_test_std)
+    return accuracy_check(spam_pred, class_test, "accuracy")
 
 def dec_tree(vector_train, vector_test, class_train, class_test, eval_measure=2):
 
@@ -122,7 +119,7 @@ def dec_tree(vector_train, vector_test, class_train, class_test, eval_measure=2)
         return time_end - time_start
 
     spam_pred = DT.predict(vector_test)
-    return accuracy_score(class_test, spam_pred)
+    return accuracy_check(spam_pred, class_test, "accuracy")
 
 if "__main__" == __name__:
     data = get_data()
@@ -147,9 +144,8 @@ if "__main__" == __name__:
         k = knn(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         knn_tot.append(k)
 
-        s,our = svm(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
+        s = svm(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         svm_tot.append(s)
-        print(s,our,"hello")
         t = dec_tree(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         dec_tot.append(t)
         if round != 9:
