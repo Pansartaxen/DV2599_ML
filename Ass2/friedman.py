@@ -1,3 +1,4 @@
+import math
 def row_ranker(row: list) -> list:
     """
     Takes a list as input and returns a list with the ranks
@@ -34,7 +35,12 @@ def friedman(knn: list, svm: list, DT: list) -> float:
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     return 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
 
+def critical_difference(alg_1: float, n_alg_1: int, alg_2: float, len_alg_2: int) -> bool:
+    """Returns the critical difference"""
+    return abs((alg_1 / n_alg_1) - (alg_2 / len_alg_2)) > 3.877 * math.sqrt((1/5))
+
 if __name__ == "__main__":
+    """Function to test the friedman function"""
     knn = [0.6809, 0.7017, 0.7012, 0.6913, 0.6333, 0.6415, 0.7216, 0.7214, 0.6578, 0.7865]
     svm = [0.7164, 0.8883, 0.8410, 0.6825, 0.7599, 0.8479, 0.7012, 0.4959, 0.9279, 0.7455]
     DT = [0.7524, 0.8964, 0.6803, 0.9102, 0.7758, 0.8154, 0.6224, 0.7585, 0.938, 0.7524]
