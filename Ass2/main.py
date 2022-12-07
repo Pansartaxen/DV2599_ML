@@ -16,6 +16,8 @@ from friedman import friedman
 
 
 # Marius Stokkedal & Sebastian Bengtsson
+# Blekinge Institute of Technoligy, Karlskrona, Sweden
+# Created 5 dec 2022
 # Implementation and testing of KNN algorithm
 
 def get_data():
@@ -52,10 +54,10 @@ def accuracy_check(pred, actual, mode):
             fp += 1
         elif not p and a:
             fn += 1
-    
+
     if mode == "accuracy":
         return (tp + tn) / (tp + tn + fp + fn)
-    
+
     elif mode == "f1":
         recall = tp / (tp + fn)
         precision = tp / (tp + fp)
@@ -99,11 +101,11 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure=2):
 
     # The fit method is used to train the model using the training da
     svm.fit(vector_train_std, class_train)
-    
+
     if eval_measure == 1:
         time_end = time()
         return time_end - time_start
-    
+
     y_pred = svm.predict(vector_test_std)
     return accuracy_score(class_test, y_pred), accuracy_check(y_pred, class_test, "accuracy")
 
@@ -141,7 +143,7 @@ if "__main__" == __name__:
         test_bucket_classes = train_classes[round::10]
         del train_vector[round::10]
         del train_classes[round::10]
-        
+
         k = knn(train_vector, test_bucket_vector, train_classes, test_bucket_classes)
         knn_tot.append(k)
 
