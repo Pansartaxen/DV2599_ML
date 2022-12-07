@@ -1,5 +1,3 @@
-from scipy import stats
-
 def row_ranker(row: list) -> list:
     """
     Takes a list as input and returns a list with
@@ -55,4 +53,3 @@ if __name__ == "__main__":
     svm = [0.7164, 0.8883, 0.8410, 0.6825, 0.7599, 0.8479, 0.7012, 0.4959, 0.9279, 0.7455]
     DT = [0.7524, 0.8964, 0.6803, 0.9102, 0.7758, 0.8154, 0.6224, 0.7585, 0.938, 0.7524]
     print(friedman(knn, svm, DT))
-    print(stats.friedmanchisquare(knn, svm, DT))
