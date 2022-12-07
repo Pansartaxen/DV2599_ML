@@ -62,13 +62,13 @@ def accuracy_check(pred, actual, mode):
 def knn(vector_train, vector_test, class_train, class_test, eval_measure=2):
     """Evalmeasure is 1 for time and 2 for accuracy and 3 for f1"""
 
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_start = time()
 
     model = KNeighborsClassifier(n_neighbors=3)
     model.fit(vector_train, class_train)
 
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_end = time()
         return time_end - time_start
 
@@ -79,7 +79,7 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure):
     """Evalmeasure is 1 for time and 2 for accuracy and 3 for f1"""
     sc = StandardScaler()
 
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_start = time()
 
     sc.fit(vector_train)
@@ -100,7 +100,7 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure):
     # The fit method is used to train the model using the training da
     svm.fit(vector_train_std, class_train)
     
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_end = time()
         return time_end - time_start
 
@@ -109,13 +109,13 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure):
 
 def dec_tree(vector_train, vector_test, class_train, class_test, eval_measure):
     """Evalmeasure is 1 for time and 2 for accuracy and 3 for f1"""
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_start = time()
 
     DT = tree.DecisionTreeClassifier()
     DT = DT.fit(vector_train, class_train)
 
-    if eval_measure == "Time":
+    if eval_measure == "time":
         time_end = time()
         return time_end - time_start
 
@@ -158,11 +158,11 @@ if "__main__" == __name__:
     vectors,classes = df_to_list(data)
     bucket_train_vector, bucket_train_classes = create_buckets(vectors, classes)
 
-    eval_measure = {1: "Time", 2: "accuracy", 3: "f-measure"}
+    eval_measure = {1: "time", 2: "accuracy", 3: "f-measure"}
     print("-"*50)
     print("Fold | KNN    | SVM    | Decision Tree")
     print("-"*50)
-    knn_tot = [[], [], []] # Time, accuracy, f-measure
+    knn_tot = [[], [], []] # time, accuracy, f-measure
     svm_tot = [[], [], []]
     dec_tot = [[], [], []]
     for i in range(3):
@@ -191,11 +191,18 @@ if "__main__" == __name__:
         friedman_stat = friedman(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
         
         cd = critical_difference(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
-        for c in cd:
-            pass
 
         print("-"*50)
         print(f"avg  | {sum(knn_tot[i])/len(knn_tot[i]):.4f} | {sum(svm_tot[i])/len(svm_tot[i]):.4f} | {sum(dec_tot[i])/len(dec_tot[i]):.4f}")
         print(f"stdv | {knn_stdev:.4f} | {svm_stdev:.4f} | {dec_stdev:.4f}")
         print("-"*50)
         print(f"Friedman statistic: {friedman_stat:.4f}")
+        for c in cd:
+            if c[0] == True:
+                print(f"The critical difference between {c[1]} is significant regarding {measure}")
+            else:
+                print(f"The critical difference between {c[1]} is not significant regarding {measure}")
+        print("-"*50)
+        print("\n\n")
+
+    print("Made by Sebastian Bengtsson & Marius Stokkedal, DVAMI20h")
