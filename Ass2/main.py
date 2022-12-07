@@ -167,8 +167,8 @@ if "__main__" == __name__:
     dec_tot = [[], [], []]
     for i in range(3):
         measure = eval_measure[i+1]
-        print("-"*50)
         print("Measure: ", measure)
+        print("-"*50)
         for round in range(0,10):
             train_vector, train_classes = get_training_data(bucket_train_vector, bucket_train_classes, round)
             test_bucket_vector, test_bucket_classes = get_test_data(bucket_train_vector, bucket_train_classes, round)
