@@ -14,6 +14,8 @@ import random
 
 from scipy import stats
 # Marius Stokkedal & Sebastian Bengtsson
+# Blekinge Institute of Technoligy, Karlskrona, Sweden
+# Created 5 dec 2022
 # Implementation and testing of KNN algorithm
 
 def get_data():
@@ -50,7 +52,7 @@ def accuracy_check(pred, actual, mode):
             fp += 1
         elif not p and a:
             fn += 1
-    
+
     if mode == "accuracy":
         return (tp + tn) / (tp + tn + fp + fn)
     
@@ -103,7 +105,7 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure):
     if eval_measure == "Time":
         time_end = time()
         return time_end - time_start
-    
+
     spam_pred = svm.predict(vector_test_std)
     return accuracy_check(spam_pred, class_test, eval_measure)
 
