@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from time import time,sleep
+from time import time
 
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 
 from sklearn import tree
 
-from friedman import friedman
+from friedman import friedman, critical_difference
 
 # Marius Stokkedal & Sebastian Bengtsson
 # Blekinge Institute of Technoligy, Karlskrona, Sweden
@@ -189,6 +189,10 @@ if "__main__" == __name__:
         dec_stdev = np.std(dec_tot[i])
 
         friedman_stat = friedman(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
+        
+        cd = critical_difference(knn_tot[i].copy(), svm_tot[i].copy(), dec_tot[i].copy())
+        for c in cd:
+            pass
 
         print("-"*50)
         print(f"avg  | {sum(knn_tot[i])/len(knn_tot[i]):.4f} | {sum(svm_tot[i])/len(svm_tot[i]):.4f} | {sum(dec_tot[i])/len(dec_tot[i]):.4f}")
