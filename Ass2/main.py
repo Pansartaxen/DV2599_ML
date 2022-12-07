@@ -18,7 +18,10 @@ from friedman import friedman, critical_difference
 
 def get_data():
     """Returns the data as a pandas dataframe"""
-    df = pd.read_csv('Ass2\spambase.csv')
+    try:
+        df = pd.read_csv('Ass2\spambase.csv')
+    except:
+        df = pd.read_csv('Ass2/spambase.csv')
     return df
 
 def df_to_list(data: pd.DataFrame):
