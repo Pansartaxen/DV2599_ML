@@ -23,6 +23,12 @@ def average(lst: list) -> float:
     """Takes in a list and returns the average value"""
     return sum(lst)/len(lst)
 
+def squared_differences(knn: list, svm: list, DT: list, avg_rank: float) -> float:
+    sum = 0
+    for i in range(len(knn)):
+        sum += (knn[i] - avg_rank) ** 2 + (svm[i] - avg_rank) ** 2 + (DT[i] - avg_rank) ** 2
+    return sum/20
+
 def friedman(knn: list, svm: list, DT: list) -> float:
     """Returns the friedman test statistic"""
 
@@ -33,7 +39,10 @@ def friedman(knn: list, svm: list, DT: list) -> float:
         DT[i] = ranked[2]
 
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
-    return 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
+    sqr_diff = squared_differences(knn, svm, DT, avg_rank)
+    ret = 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
+    print(sqr_diff)
+    return ret / sqr_diff
 
 def critical_difference(alg_1: list, alg_2: list, alg_3: list) -> list:
     """Returns the critical difference"""
