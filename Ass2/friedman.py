@@ -1,24 +1,12 @@
 def row_ranker(row: list) -> list:
     """
-    Takes a list as input and returns a list with
-    the ranks of the values where 1 is lowest
+    Takes a list as input and returns a list with the ranks
+    of the values where 1 is asigned to the lowest value
     """
-    # score = 1
-    # score_dict = {}
-    # for val in set(row):
-    #     count = row.count(val)
-    #     tot = 0
-    #     for i in range(count):
-    #         tot += i+score
-    #     score += count
-    #     score_dict[val] = int(tot/count)
-    # return([score_dict[val] for val in row])
     row_cpy = row.copy()
     row_cpy = sorted(row_cpy)
-    # row_cpy = list(reversed(row_cpy))
     return_list = [0 ,0 ,0]
-    # print("ORG",[score_dict[val] for val in row])
-    # print("NEW",[row_cpy.index(val)+1 for val in row])
+
     if row == [row[0], row[0], row[0]]:
         return [2, 2, 2]
 
@@ -28,9 +16,7 @@ def row_ranker(row: list) -> list:
             return_list[index], return_list[index-1] = rank, rank
         else:
             return_list[index] = row_cpy.index(row[index])+1
-    print(return_list)
     return return_list
-    # return [row_cpy.index(val)+1 for val in row]
 
 def average(lst: list) -> float:
     """Takes in a list and returns the average value"""
