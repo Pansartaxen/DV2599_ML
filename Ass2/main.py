@@ -125,8 +125,9 @@ def dec_tree(vector_train, vector_test, class_train, class_test, eval_measure):
     return accuracy_check(spam_pred, class_test, eval_measure)
 
 def create_buckets(vector, classes):
+    """Returns the data in 10 buckets"""
 
-    train_vector = vectors.copy()
+    train_vector = vector.copy()
     train_classes = classes.copy()
 
     bucket_train_vector = []
