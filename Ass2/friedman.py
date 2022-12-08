@@ -40,8 +40,9 @@ def friedman(knn: list, svm: list, DT: list) -> float:
 
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     sqr_diff = squared_differences(knn, svm, DT, avg_rank)
+    print(f"Average knn: {average(knn)} Average svm: {average(svm)} Average DT: {average(DT)}")
     ret = 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
-    print(sqr_diff)
+    print(f"ret: {ret} sqr_diff: {sqr_diff}")
     return ret / sqr_diff
 
 def critical_difference(alg_1: list, alg_2: list, alg_3: list) -> list:
