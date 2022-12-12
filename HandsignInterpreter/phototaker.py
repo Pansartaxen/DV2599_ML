@@ -1,4 +1,7 @@
 import cv2
+from PIL import Image
+from numpy import asarray
+
 
 # Open the camera
 cap = cv2.VideoCapture(0)
@@ -29,6 +32,12 @@ while capturing:
 cap.release()
 cv2.destroyAllWindows()
 
+def png_to_array(path):
+    png = Image.open(path)
+    png_array = asarray(png)
 
+    print(png_array[0][0])
+    print(png_array.shape)
 
-
+if __name__ == "__main__":
+    png_to_array('HandsignInterpreter/test.png')
