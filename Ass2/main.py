@@ -9,12 +9,10 @@ from sklearn.preprocessing import StandardScaler
 
 from sklearn import tree
 
-from friedman import friedman, critical_difference
+from utilities import friedman, critical_difference
 
 # Marius Stokkedal & Sebastian Bengtsson
 # Blekinge Institute of Technoligy, Karlskrona, Sweden
-# Created 5 dec 2022
-# Implementation and testing of KNN algorithm
 
 def get_data():
     """Returns the data as a pandas dataframe"""
@@ -92,15 +90,6 @@ def svm(vector_train, vector_test, class_train, class_test, eval_measure):
 
     svm = SVC(kernel='linear', C=0.05, random_state=1)
 
-    # C value is the penalty parameter of the error term e.g. the cost of misclassification
-    # Higher C value means potentially higher accuracy but also higher risk of overfitting
-
-    # The kernel parameter is used to specify the kernel type to be used in the algorithm
-    # Kernel means that the data is transformed into a higher dimension
-    # Linear kernel is used when the data is linearly separable
-    # Which means that the data can be separated by a straight line
-
-    # The fit method is used to train the model using the training da
     svm.fit(vector_train_std, class_train)
     
     if eval_measure == "time":
@@ -162,16 +151,18 @@ if "__main__" == __name__:
     bucket_train_vector, bucket_train_classes = create_buckets(vectors, classes)
 
     eval_measure = {1: "time", 2: "accuracy", 3: "f-measure"}
-    print("-"*50)
-    print("Fold | KNN    | SVM    | Decision Tree")
-    print("-"*50)
+
     knn_tot = [[], [], []] # time, accuracy, f-measure
     svm_tot = [[], [], []]
     dec_tot = [[], [], []]
     for i in range(3):
         measure = eval_measure[i+1]
         print("Measure: ", measure)
+    
         print("-"*50)
+        print("Fold | KNN    | SVM    | Decision Tree")
+        print("-"*50)
+
         for round in range(0,10):
             train_vector, train_classes = get_training_data(bucket_train_vector, bucket_train_classes, round)
             test_bucket_vector, test_bucket_classes = get_test_data(bucket_train_vector, bucket_train_classes, round)
