@@ -1,6 +1,7 @@
 import cv2
 from PIL import Image
 from numpy import asarray
+from algorithms import train_random_forest, classify_image
 
 def png_to_array(path):
     png = Image.open(path)
@@ -8,17 +9,7 @@ def png_to_array(path):
 
     return png_array
 
-
-def classify_image():
-    letter = ""
-    image_array = png_to_array('HandsignInterpreter\latest.png')
-
-    if letter == "":
-        letter = "?"
-    
-    return letter
-
-def run_camera():
+def run_camera(clf):
     # Open the camera
     cap = cv2.VideoCapture(0)
 
@@ -32,7 +23,7 @@ def run_camera():
     # Loop until the user hits the 'q' key
     while True:
         # Read a frame from the camera
-        ret, frame = cap.read()
+        ret, frame = cap.read()        
 
         # Check if the frame was successfully read
         if not ret:
@@ -45,12 +36,11 @@ def run_camera():
     
         if key == ord('c'):
             text = ""
-        
-
 
         # If the user pressed 'L', put some text on the frame
         if key == ord(' '):
-            new_letter = classify_image()
+            box = frame[80:276, 50:246]
+            new_letter = classify_image(box, clf)
             text += new_letter
             print("Found letter",new_letter)
         
@@ -69,4 +59,10 @@ def run_camera():
 
 if __name__ == "__main__":
     #png_to_array('HandsignInterpreter/test.png')
-    run_camera()
+    acc, clf = train_random_forest()
+    run_camera(clf)
+
+    # TODO
+    # get the 28x28 image from the camera
+    # make the image black and white
+    # classify the image
