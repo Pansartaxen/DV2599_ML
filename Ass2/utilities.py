@@ -41,7 +41,6 @@ def friedman(knn: list, svm: list, DT: list) -> float:
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     sqr_diff = squared_differences(knn, svm, DT, avg_rank)
     ret = 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
-    print(sqr_diff)
     return ret / sqr_diff
 
 def critical_difference(alg_1: list, alg_2: list, alg_3: list) -> list:
@@ -64,7 +63,7 @@ def critical_difference(alg_1: list, alg_2: list, alg_3: list) -> list:
     return ret_list
 
 if __name__ == "__main__":
-    """Function to test the friedman function"""
+    """Section to test the friedman function"""
     knn = [0.6809, 0.7017, 0.7012, 0.6913, 0.6333, 0.6415, 0.7216, 0.7214, 0.6578, 0.7865]
     svm = [0.7164, 0.8883, 0.8410, 0.6825, 0.7599, 0.8479, 0.7012, 0.4959, 0.9279, 0.7455]
     DT = [0.7524, 0.8964, 0.6803, 0.9102, 0.7758, 0.8154, 0.6224, 0.7585, 0.938, 0.7524]
