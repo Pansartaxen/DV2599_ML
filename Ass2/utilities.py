@@ -40,6 +40,7 @@ def friedman(knn: list, svm: list, DT: list) -> float:
 
     avg_rank = (average(knn) + average(svm) + average(DT)) / 3
     sqr_diff = squared_differences(knn, svm, DT, avg_rank)
+    print(f"Average knn: {average(knn)} Average svm: {average(svm)} Average DT: {average(DT)}")
     ret = 10 * ((average(knn) - avg_rank) ** 2 + (average(svm) - avg_rank) ** 2 + (average(DT) - avg_rank) ** 2)
     return ret / sqr_diff
 
