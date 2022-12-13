@@ -94,6 +94,7 @@ if __name__ == "__main__":
         print("Model already trained")
     else:
         training_time = time.time()
+        print("Training svm")
         train_svm()
         print("Training took", time.time() - training_time, "seconds")
 
