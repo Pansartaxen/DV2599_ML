@@ -124,7 +124,8 @@ def classify_image_svm(image, svm):
     sc = StandardScaler()
     image_std = sc.transform(image)
     letter = svm.predict(image_std)
-    return letters[letter]
+    ret_let = letters[letter[0]]
+    return ret_let
 
 if __name__ == "__main__":
     print("Running algorithms.py as main")
