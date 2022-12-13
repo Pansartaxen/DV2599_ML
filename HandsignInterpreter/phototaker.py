@@ -2,6 +2,7 @@ import cv2
 from PIL import Image
 from numpy import asarray
 from algorithms import train_random_forest, classify_image
+import time
 
 def png_to_array(path):
     png = Image.open(path)
@@ -40,6 +41,18 @@ def run_camera(clf):
         # If the user pressed 'L', put some text on the frame
         if key == ord(' '):
             box = frame[80:276, 50:246]
+            # resize the image to 28x28
+            box = cv2.resize(box, (28, 28))
+            # convert to grayscale
+            box = cv2.cvtColor(box, cv2.COLOR_BGR2GRAY)
+            # invert the colors
+            #box = 255 - box
+            cv2.imwrite("HandsignInterpreter/hand.png", box)
+
+            #turn it to 1 long array
+            box = box.reshape(1, 784)
+            print(box) 
+            # save the image
             new_letter = classify_image(box, clf)
             text += new_letter
             print("Found letter",new_letter)
@@ -59,8 +72,14 @@ def run_camera(clf):
 
 if __name__ == "__main__":
     #png_to_array('HandsignInterpreter/test.png')
+    print("Training random forest")
+    training_time = time.time()
     acc, clf = train_random_forest()
+    print("Training took", time.time() - training_time, "seconds")
+    
+    print("Starting camera")
     run_camera(clf)
+    print("Done")
 
     # TODO
     # get the 28x28 image from the camera
