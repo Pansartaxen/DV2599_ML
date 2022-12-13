@@ -112,6 +112,7 @@ def train_svm():
     svm.fit(vector_train_std, classes_train)
 
     pickle.dump(svm, open('HandsignInterpreter/finalized_model_svm.sav', 'wb'))
+    return sc
 
 def classify_image_RF(image, clf):
     """Returns the letter that the image is classified as"""
@@ -119,12 +120,8 @@ def classify_image_RF(image, clf):
     ret_let = letters[letter[0]]
     return ret_let
 
-def classify_image_svm(image, svm):
+def classify_image_svm(image, svm, sc):
     """Returns the letter that the image is classified as"""
-    sc = StandardScaler()
-    df_train = get_data()
-    vector_train, classes_train = df_to_list(df_train)
-    sc.fit(vector_train)
     image_std = sc.transform(image)
     letter = svm.predict(image_std)
     ret_let = letters[letter[0]]
