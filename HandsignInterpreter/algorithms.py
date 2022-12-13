@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
 from time import time
+import pickle
 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
 
 
 letters = {
@@ -90,14 +93,36 @@ def train_random_forest():
     vector_train, classes_train = df_to_list(df_train)
     clf.fit(vector_train, classes_train)
 
-    df_test = get_test_data()
-    vector_test, classes_test = df_to_list(df_test)
-    pred = clf.predict(vector_test)
-    return accuracy_check(pred, classes_test), clf
+    pickle.dump(clf, open('HandsignInterpreter/finalized_model_RF.sav', 'wb'))
+    #return accuracy_check(pred, classes_test), clf
 
-def classify_image(image, clf):
+def train_svm():
+    """Evalmeasure is 1 for time and 2 for accuracy and 3 for f1"""
+    sc = StandardScaler()
+
+    df_train = get_data()
+    vector_train, classes_train = df_to_list(df_train)
+
+    sc.fit(vector_train)
+
+    vector_train_std = sc.transform(vector_train)
+
+    svm = SVC(kernel='linear', C=0.05, random_state=1)
+
+    svm.fit(vector_train_std, classes_train)
+
+    pickle.dump(svm, open('HandsignInterpreter/finalized_model_svm.sav', 'wb'))
+
+def classify_image_RF(image, clf):
     """Returns the letter that the image is classified as"""
     letter = clf.predict(image)
+    return letters[letter]
+
+def classify_image_svm(image, svm):
+    """Returns the letter that the image is classified as"""
+    sc = StandardScaler()
+    image_std = sc.transform(image)
+    letter = svm.predict(image_std)
     return letters[letter]
 
 if __name__ == "__main__":
