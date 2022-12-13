@@ -122,9 +122,13 @@ def classify_image_RF(image, clf):
 def classify_image_svm(image, svm):
     """Returns the letter that the image is classified as"""
     sc = StandardScaler()
+    df_train = get_data()
+    vector_train, classes_train = df_to_list(df_train)
+    sc.fit(vector_train)
     image_std = sc.transform(image)
     letter = svm.predict(image_std)
-    return letters[letter]
+    ret_let = letters[letter[0]]
+    return ret_let
 
 if __name__ == "__main__":
     print("Running algorithms.py as main")
