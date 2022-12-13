@@ -65,7 +65,7 @@ def run_camera():
             print(box)
             # save the image
             new_letter_RF = classify_image_RF(box, clf)
-            new_letter_svm = classify_image_svm(box, svm)
+            new_letter_svm = classify_image_svm(box, svm, sc)
             text_RF += new_letter_RF
             text_svm += new_letter_svm
             print("Found letter RF",new_letter_RF)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     else:
         training_time = time.time()
         print("Training svm")
-        train_svm()
+        sc = train_svm()
         print("Training took", time.time() - training_time, "seconds")
 
     print("Starting camera")
