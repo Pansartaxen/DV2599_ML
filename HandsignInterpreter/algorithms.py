@@ -96,6 +96,14 @@ def train_random_forest():
     pickle.dump(clf, open('HandsignInterpreter/finalized_model_RF.sav', 'wb'))
     #return accuracy_check(pred, classes_test), clf
 
+def sc_generator():
+    """Returns the standard scaler"""
+    sc = StandardScaler()
+    df_train = get_data()
+    vector_train, classes_train = df_to_list(df_train)
+    sc.fit(vector_train)
+    return sc
+
 def train_svm():
     """Evalmeasure is 1 for time and 2 for accuracy and 3 for f1"""
     sc = StandardScaler()

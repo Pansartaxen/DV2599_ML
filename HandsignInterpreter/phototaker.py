@@ -1,7 +1,7 @@
 import cv2
 from PIL import Image
 from numpy import asarray
-from algorithms import train_random_forest, classify_image_RF, classify_image_svm, train_svm
+from algorithms import train_random_forest, classify_image_RF, classify_image_svm, train_svm, sc_generator
 import time
 import pickle
 import os
@@ -21,7 +21,7 @@ def run_camera():
     if os.name == 'posix': # Linux and Mac
         cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     elif os.name == 'nt': # Windows
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
     # Set the camera resolution
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -96,6 +96,7 @@ if __name__ == "__main__":
         print("Training took", time.time() - training_time, "seconds")
     if 'finalized_model_svm.sav' in os.listdir('HandsignInterpreter'):
         print("Model already trained")
+        sc = sc_generator()
     else:
         training_time = time.time()
         print("Training svm")
