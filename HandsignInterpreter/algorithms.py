@@ -98,7 +98,9 @@ def train_random_forest():
 def classify_image(image, clf):
     """Returns the letter that the image is classified as"""
     letter = clf.predict(image)
-    return letters[letter]
+    ret_let = letters[letter[0]]
+    return ret_let
 
 if __name__ == "__main__":
+    print("Running algorithms.py as main")
     rm_acc, random_forest = train_random_forest()
