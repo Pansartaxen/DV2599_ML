@@ -17,7 +17,11 @@ def run_camera():
     clf = pickle.load(open('HandsignInterpreter/finalized_model_RF.sav', 'rb'))
     svm = pickle.load(open('HandsignInterpreter/finalized_model_svm.sav', 'rb'))
     #result = loaded_model.score(X_test, Y_test)
-    cap = cv2.VideoCapture(1)
+
+    if os.name == 'posix': # Linux and Mac
+        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+    elif os.name == 'nt': # Windows
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW) 
 
     # Set the camera resolution
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
