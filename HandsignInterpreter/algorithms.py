@@ -3,10 +3,13 @@ import numpy as np
 from time import time
 import pickle
 
+import matplotlib.pyplot as plt
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler, LabelBinarizer
 
+import tensorflow as tf
 import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
@@ -42,6 +45,33 @@ letters = {
     23: 'X',
     24: 'Y',
     25: 'Z'
+}
+
+cnn_letters = {
+    0: 'A',
+    1: 'B',
+    2: 'C',
+    3: 'D',
+    4: 'E',
+    5: 'F',
+    6: 'G',
+    7: 'H',
+    8: 'I',
+    9: 'K',
+    10: 'L',
+    11: 'M',
+    12: 'N',
+    13: 'O',
+    14: 'P',
+    15: 'Q',
+    16: 'R',
+    17: 'S',
+    18: 'T',
+    19: 'U',
+    20: 'V',
+    21: 'W',
+    22: 'X',
+    23: 'Y'
 }
 
 def get_data():
@@ -129,7 +159,7 @@ def train_svm():
     pickle.dump(svm, open('HandsignInterpreter/finalized_model_svm.sav', 'wb'))
     return sc
 
-def cnn_train():
+def train_cnn():
     df = get_data()
     df_test = get_test_data()
     classes_train = df['label']
@@ -185,6 +215,7 @@ def cnn_train():
 
     history = model.fit(datagen.flow(vector_train, classes_train, batch_size = 128), epochs = 20, validation_data = (vector_test, classes_test), callbacks = [learning_rate_reduction])
     print("Accuracy of the model is - " , model.evaluate(vector_test, classes_test)[1]*100 , "%")
+    model.save("HandsignInterpreter/my_model")
 
 def classify_image_RF(image, clf):
     """Returns the letter that the image is classified as"""
@@ -199,6 +230,16 @@ def classify_image_svm(image, svm, sc):
     ret_let = letters[letter[0]]
     return ret_let
 
+def classify_image_cnn(image):
+    """Returns the letter that the image is classified as"""
+    model = keras.models.load_model("HandsignInterpreter/my_model")
+    #img = plt.imread(image)
+    img = image
+    img = img.reshape(1, 28, 28, 1)
+    letter = model.predict(img)
+    ret_let = np.argmax(letter, axis = 1)
+    return cnn_letters[ret_let[0]]
+
 if __name__ == "__main__":
     print("Running algorithms.py as main")
-    cnn_train()
+    train_cnn()

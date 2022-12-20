@@ -1,7 +1,7 @@
 import cv2
 from PIL import Image
 from numpy import asarray
-from algorithms import train_random_forest, classify_image_RF, classify_image_svm, train_svm, sc_generator
+from algorithms import train_random_forest, classify_image_RF, classify_image_svm, train_svm, sc_generator, train_cnn, classify_image_cnn
 import time
 import pickle
 import os
@@ -19,7 +19,7 @@ def run_camera():
     #result = loaded_model.score(X_test, Y_test)
 
     if os.name == 'posix': # Linux and Mac
-        cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(0)
     elif os.name == 'nt': # Windows
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
@@ -30,6 +30,7 @@ def run_camera():
     info2 = """c to clear text_RF, q to quit"""
     text_RF = ""
     text_svm = ""
+    text_cnn = ""
 
     # Loop until the user hits the 'q' key
     while True:
@@ -48,6 +49,7 @@ def run_camera():
         if key == ord('c'):
             text_RF = ""
             text_svm = ""
+            text_cnn = ""
 
         # If the user pressed 'L', put some text_RF on the frame
         if key == ord(' '):
@@ -66,15 +68,18 @@ def run_camera():
             # save the image
             new_letter_RF = classify_image_RF(box, clf)
             new_letter_svm = classify_image_svm(box, svm, sc)
+            new_letter_cnn = classify_image_cnn(box)
             text_RF += new_letter_RF
             text_svm += new_letter_svm
+            text_cnn += new_letter_cnn
             print("Found letter RF",new_letter_RF)
-            print("Found letter svm",new_letter_svm)
+            #print("Found letter svm",new_letter_svm)
+            print("Found letter cnn",new_letter_cnn)
 
         cv2.putText(frame, info, (20, 460), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 200, 100), 2)
         cv2.putText(frame, info2, (20, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 200, 100), 2)
         cv2.putText(frame, text_RF, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
-        cv2.putText(frame, text_svm, (70, 80), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
+        cv2.putText(frame, text_cnn, (70, 80), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
         cv2.rectangle(frame, (50, 80), (246, 276), (0, 255, 0), 2)
 
 
@@ -101,6 +106,13 @@ if __name__ == "__main__":
         training_time = time.time()
         print("Training svm")
         sc = train_svm()
+        print("Training took", time.time() - training_time, "seconds")
+    if 'my_model' in os.listdir('HandsignInterpreter'):
+        print('CNN already trained')
+    else:
+        training_time = time.time()
+        print("Training CNN, this might take a while :/")
+        sc = train_cnn()
         print("Training took", time.time() - training_time, "seconds")
 
     print("Starting camera")
