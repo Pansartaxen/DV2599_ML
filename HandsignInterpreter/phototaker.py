@@ -12,6 +12,17 @@ def png_to_array(path):
 
     return png_array
 
+def decide_letter(l_RF, l_SVM, l_CNN):
+    """Lets the three algorithms vote on which letter it is"""
+    if l_RF == l_SVM:
+        return l_RF
+    elif l_RF == l_CNN:
+        return l_RF
+    elif l_SVM == l_CNN:
+        return l_SVM
+    else:
+        return l_CNN
+
 def run_camera():
     # Open the camera
     clf = pickle.load(open('HandsignInterpreter/finalized_model_RF.sav', 'rb'))
@@ -28,6 +39,7 @@ def run_camera():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     info = """Press space to read a new letter,"""
     info2 = """c to clear text_RF, q to quit"""
+    text = ""
     text_RF = ""
     text_svm = ""
     text_cnn = ""
@@ -47,9 +59,10 @@ def run_camera():
             break
 
         if key == ord('c'):
-            text_RF = ""
-            text_svm = ""
-            text_cnn = ""
+            # text_RF = ""
+            # text_svm = ""
+            # text_cnn = ""
+            text = ""
 
         # If the user pressed 'L', put some text_RF on the frame
         if key == ord(' '):
@@ -69,19 +82,20 @@ def run_camera():
             new_letter_RF = classify_image_RF(box, clf)
             new_letter_svm = classify_image_svm(box, svm, sc)
             new_letter_cnn = classify_image_cnn(box)
-            text_RF += new_letter_RF
-            text_svm += new_letter_svm
-            text_cnn += new_letter_cnn
+            new_letter = decide_letter(new_letter_RF, new_letter_svm, new_letter_cnn)
+            text += new_letter
+            # text_RF += new_letter_RF
+            # text_svm += new_letter_svm
+            # text_cnn += new_letter_cnn
             print("Found letter RF",new_letter_RF)
-            #print("Found letter svm",new_letter_svm)
+            print("Found letter svm",new_letter_svm)
             print("Found letter cnn",new_letter_cnn)
 
         cv2.putText(frame, info, (20, 460), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 200, 100), 2)
         cv2.putText(frame, info2, (20, 440), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 200, 100), 2)
-        cv2.putText(frame, text_RF, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
-        cv2.putText(frame, text_cnn, (70, 80), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
+        cv2.putText(frame, text, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
+        #cv2.putText(frame, text_cnn, (70, 80), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 0), 2)
         cv2.rectangle(frame, (50, 80), (246, 276), (0, 255, 0), 2)
-
 
         # Show the frame
         cv2.imshow("Camera", frame)

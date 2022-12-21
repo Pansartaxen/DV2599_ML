@@ -235,6 +235,7 @@ def classify_image_cnn(image):
     model = keras.models.load_model("HandsignInterpreter/my_model")
     #img = plt.imread(image)
     img = image
+    img = img / 255
     img = img.reshape(1, 28, 28, 1)
     letter = model.predict(img)
     ret_let = np.argmax(letter, axis = 1)
