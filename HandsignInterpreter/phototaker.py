@@ -77,7 +77,7 @@ def run_camera():
 
             #turn it to 1 long array
             box = box.reshape(1, 784)
-            print(box)
+            #print(box)
             # save the image
             new_letter_RF = classify_image_RF(box, clf)
             new_letter_svm = classify_image_svm(box, svm, sc)

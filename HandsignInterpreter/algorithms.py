@@ -179,17 +179,13 @@ def train_cnn():
     vector_test = vector_test.reshape(-1, 28, 28, 1)
 
     datagen = ImageDataGenerator(
-        featurewise_center=False,  # set input mean to 0 over the dataset
-        samplewise_center=False,  # set each sample mean to 0
-        featurewise_std_normalization=False,  # divide inputs by std of the dataset
-        samplewise_std_normalization=False,  # divide each input by its std
-        zca_whitening=False,  # apply ZCA whitening
-        rotation_range=10,  # randomly rotate images in the range (degrees, 0 to 180)
-        zoom_range = 0.1, # Randomly zoom image
-        width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=False,  # randomly flip images
-        vertical_flip=False)  # randomly flip images
+        rotation_range=45,  # randomly rotate images in the range (degrees, 0 to 180)
+        zoom_range = 0.2, # Randomly zoom image
+        width_shift_range=10,  # randomly shift images horizontally (fraction of total height, if < 1, or pixels if >= 1)
+        height_shift_range=10,  # randomly shift images vertically (fraction of total height, if < 1, or pixels if >= 1)
+        shear_range=2, # Shear Intensity (Shear angle in counter-clockwise direction in degrees)
+        channel_shift_range=0.1 # Range for random channel shifts
+    )
 
     datagen.fit(vector_train)
 
@@ -239,6 +235,7 @@ def classify_image_cnn(image):
     img = img.reshape(1, 28, 28, 1)
     letter = model.predict(img)
     ret_let = np.argmax(letter, axis = 1)
+    print(ret_let)
     return cnn_letters[ret_let[0]]
 
 if __name__ == "__main__":
