@@ -182,7 +182,7 @@ def train_cnn():
     model.summary()
 
     print("Accuracy of the model is - " , model.evaluate(vector_test, classes_test)[1]*100 , "%")
-    model.save("HandsignInterpreter/my_model")
+    model.save("HandsignInterpreter/CNN_model")
 
 def classify_image_RF(image, clf):
     """Returns the letter that the image is classified as"""
@@ -199,7 +199,7 @@ def classify_image_svm(image, svm, sc):
 
 def classify_image_cnn(image):
     """Returns the letter that the image is classified as"""
-    model = keras.models.load_model("HandsignInterpreter/my_model")
+    model = keras.models.load_model("HandsignInterpreter/CNN_model")
     img = image
     img = img / 255
     img = img.reshape(1, 28, 28, 1)

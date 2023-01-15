@@ -112,7 +112,7 @@ if __name__ == "__main__":
         print("Training svm")
         sc = train_svm()
         print("Training took", time.time() - training_time, "seconds")
-    if 'my_model' in os.listdir('HandsignInterpreter'):
+    if 'CNN_model' in os.listdir('HandsignInterpreter'):
         print('CNN already trained')
     else:
         training_time = time.time()
