@@ -4,7 +4,7 @@ HandsignInterpreter by Marius Stokkedal and Sebastian Bengtsson
 Requirements:
 Python 3.10 or older python 3 version
 
-Modules:
+Modules needed:
 Pandas
 Pickle
 Tensorflow
@@ -17,4 +17,4 @@ Opencv-python
 To start the hand interperter the file 'phototaker.py' is the one to execute
 Press SPACE to take a photo, c to clear and q to shut program down
 
-'algorithms.py' contains, as the name sugests, the algorithms and these are imported into 'phototaker.py'
+'algorithms.py' contains, as the name suggests, the algorithms and these are imported into 'phototaker.py'
