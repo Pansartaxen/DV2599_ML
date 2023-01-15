@@ -58,7 +58,6 @@ def run_camera():
         if key == ord('c'):
             text = ""
 
-        # If the user pressed 'L', put some text_RF on the frame
         if key == ord(' '):
             box = frame[80:276, 50:246]
             # resize the image to 28x28
